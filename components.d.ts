@@ -11,6 +11,7 @@ declare module 'vue' {
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
     ElDropdown: typeof import('element-plus/es')['ElDropdown']
-    MyDraggable: typeof import('./src/components/myDraggable2/myDraggable.vue')['default']
+    MainChat: typeof import('./src/components/mainChat/mainChat.vue')['default']
+    MyDraggable: typeof import('./src/components/myDraggable/myDraggable.vue')['default']
   }
 }
