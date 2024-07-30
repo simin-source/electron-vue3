@@ -1,8 +1,9 @@
 "use strict";
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, desktopCapturer, session } = require("electron");
 const path = require("path");
 let mainWin;
 let childWin;
+let cutWin;
 app.whenReady().then(() => {
   createMainWindow();
   app.on("activate", function() {
@@ -36,15 +37,24 @@ ipcMain.on("m2e_send", mainWinToElectron);
 function mainWinToElectron(e, res) {
   console.log("mainWIn", res);
   if (res.method == "changeChildWinState")
-    changeChildWinState();
+    changeChildWinState(res.type);
   if (res.method == "updateChildData")
     updateChildData(res);
 }
-function changeChildWinState(e, res) {
-  if (childWin != null) {
-    childWin.close();
-  } else {
-    createChildWindow();
+function changeChildWinState(type) {
+  if (type == "new") {
+    if (childWin != null) {
+      childWin.close();
+    } else {
+      createChildWindow();
+    }
+  }
+  if (type == "cut") {
+    if (cutWin != null) {
+      cutWin.close();
+    } else {
+      createCutwindow();
+    }
   }
 }
 const updateChildData = (res) => {
@@ -81,3 +91,21 @@ const updateMainData = (res) => {
     return;
   mainWin.webContents.send("fromChild", { method: res.method, list: res.obj });
 };
+function createCutwindow() {
+  cutWin = new BrowserWindow({
+    title: "截图",
+    width: 800,
+    height: 600,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js")
+      //__dirname 根路径
+    }
+  });
+  if (process.env.NODE_ENV == "development") {
+    cutWin.loadURL("http://localhost:5173/#/child");
+    cutWin.webContents.openDevTools();
+  }
+  cutWin.on("close", function() {
+    cutWin = null;
+  });
+}

@@ -1,5 +1,5 @@
 import { defineComponent } from "vue"
-import { chatBox } from './mainChat.module.scss'
+import { chatBox, cutScreen } from './mainChat.module.scss'
 
 export default defineComponent({
   name: 'MainChat',
@@ -20,8 +20,12 @@ export default defineComponent({
 
         const funObj = [
           {
-            name: "c",
+            name: "n",//new
             fun: this.openChildWin,
+          },
+          {
+            name: "c",//cut
+            fun: this.openCutSreen,
           },
         ];
 
@@ -46,10 +50,10 @@ export default defineComponent({
     openChildWin() {
       console.log('打开辅助窗口');
       //@ts-ignore 
-      window.api.send("m2e_send", { method: "changeChildWinState" });
+      window.api.send("m2e_send", { method: "changeChildWinState", type: 'new' });
 
     },
-    mainSendChild(){
+    mainSendChild() {
       //@ts-ignore 
       window.api.send("m2e_send", {
         method: "updateChildData",
@@ -61,11 +65,17 @@ export default defineComponent({
       window.api.receive("fromChild", (res: any) => {
         console.log("mainGetChildInfo", res);
       });
+    },
+    openCutSreen() {
+      console.log('打开截图窗口');
+      //@ts-ignore 
+      window.api.send("m2e_send", { method: "changeChildWinState", type: 'cut' });
     }
   },
   render() {
     return <div class={chatBox} onClick={this.mainSendChild}>
       聊天界面
+      <div class={cutScreen} onClick={this.openCutSreen}>截图</div>
     </div>
   }
 })

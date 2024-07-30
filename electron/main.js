@@ -1,8 +1,9 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, desktopCapturer, session } = require('electron');
 const path = require('path');
 
 let mainWin;
 let childWin;
+let cutWin;
 
 app.whenReady().then(() => {
   createMainWindow();
@@ -49,21 +50,34 @@ ipcMain.on("m2e_send", mainWinToElectron);
 //mainWin -> electron
 function mainWinToElectron(e, res) {
   console.log("mainWIn", res)
-  if (res.method == "changeChildWinState") changeChildWinState()
+  if (res.method == "changeChildWinState") changeChildWinState(res.type)
   if (res.method == "updateChildData") updateChildData(res)
 }
- 
-function changeChildWinState(e, res) {
-  if (childWin != null) {
-    childWin.close();
-  } else {
-    createChildWindow()
+
+function changeChildWinState(type) {
+  if (type == 'new') {
+    if (childWin != null) {
+      childWin.close();
+    } else {
+      createChildWindow()
+    }
+  }
+  if (type == 'cut') {
+    if (cutWin != null) {
+      cutWin.close();
+    } else {
+      createCutwindow()
+    }
   }
 }
 
 const updateChildData = (res) => {
   if (childWin == null) return;
   childWin.webContents.send("fromMain", { method: res.method, list: res.obj });
+}
+
+function getAudioInfo() {
+  // desktopCapturer访问关于使用navigator.mediaDevices.getUserMedia API 获取的可以用来从桌面捕获音频和视频的媒体源的信息。
 }
 
 //--------------------------------------------------------------
@@ -105,4 +119,30 @@ function childWinToElectron(e, res) {
 const updateMainData = (res) => {
   if (mainWin == null) return;
   mainWin.webContents.send("fromChild", { method: res.method, list: res.obj });
+}
+
+// ------------------------------------------------------------
+/*
+透明截图窗口
+*/
+
+function createCutwindow() {
+  cutWin = new BrowserWindow({
+    title: "截图",
+    width: 800,
+    height: 600,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js')//__dirname 根路径
+    }
+  });
+
+  // development模式
+  if (process.env.NODE_ENV == 'development') {
+    cutWin.loadURL('http://localhost:5173/#/child')
+    cutWin.webContents.openDevTools();
+  }
+
+  cutWin.on("close", function () {
+    cutWin = null;//必须
+  });
 }

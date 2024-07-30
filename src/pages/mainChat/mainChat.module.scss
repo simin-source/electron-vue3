@@ -1,5 +1,14 @@
-.chatBox{
+.chatBox {
   width: 100%;
   height: 100%;
   background-color: pink;
+
+  .cutScreen {
+    display: block;
+    width: auto;
+    height: auto;
+    padding: 5px 8px;
+    border-radius: 5px;
+    background: yellowgreen;
+  }
 }
