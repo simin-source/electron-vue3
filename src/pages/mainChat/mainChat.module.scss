@@ -5,10 +5,11 @@
 
   .cutScreen {
     display: block;
-    width: auto;
+    width:fit-content;
     height: auto;
     padding: 5px 8px;
     border-radius: 5px;
     background: yellowgreen;
+    cursor: pointer;
   }
 }

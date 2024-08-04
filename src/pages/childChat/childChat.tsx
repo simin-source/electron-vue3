@@ -1,5 +1,6 @@
 import { defineComponent } from "vue"
 import { chatBox } from './childChat.module.scss'
+import icon from '@/assets/audio.png'
 
 export default defineComponent({
   name: 'ChildChat',
@@ -17,17 +18,17 @@ export default defineComponent({
         console.log("childGetMainInfo", res);
       });
     },
-    childSendMain(){
+    childSendMain() {
       //@ts-ignore 
-      window.api.send("c2e_send", {
-        method: "updateMainData",
-        obj: { info: 'childSendInfoToMain' }
-      })
+      // window.api.send("c2e_send", {
+      //   method: "updateMainData",
+      //   obj: { info: 'childSendInfoToMain' }
+      // })
     }
   },
   render() {
     return <div class={chatBox} onClick={this.childSendMain}>
-      聊天界面-辅助
+      <img src={icon} alt="图片找不到" />
     </div>
   }
 })

@@ -1,5 +1,11 @@
 .chatBox{
   width: 100%;
   height: 100%;
-  background-color: skyblue;
+  background-color: transparent;
+  -webkit-app-region: drag; /* 允许整个窗口区域拖拽 */
+  cursor: move; /* 鼠标样式为移动 */
+
+  img{
+    width: 50px;
+  }
 }

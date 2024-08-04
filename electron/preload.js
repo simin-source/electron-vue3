@@ -22,7 +22,7 @@ contextBridge.exposeInMainWorld("api", {
   receive: (channel, func) => {
     let validChannels = ["fromMain","fromChild"];
     if (validChannels.includes(channel)) {
-      ipcRenderer.on(channel, (event, ...args) => func(...args));
+      ipcRenderer.on(channel, (event, ...args) => func(...args));//监听回调函数
     }
   },
 });
